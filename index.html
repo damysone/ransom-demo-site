@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Okta OIDC Demo Portal</title>
-  <!-- Tailwind CSS (UI 스타일링) -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Okta Auth SDK CDN -->
   <script src="https://global.oktacdn.com/okta-auth-js/7.4.0/okta-auth-js.min.js"></script>
@@ -26,6 +26,8 @@
       <button id="btn-login" onclick="login()" class="w-full py-3 px-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-blue-500/20">
         Okta SSO 로그인
       </button>
+      <!-- 에러 표시 영역 -->
+      <div id="error-msg" class="hidden p-3 text-xs bg-red-900/50 border border-red-500 text-red-200 rounded text-left"></div>
     </div>
 
     <!-- State 2: 로그인 후 화면 -->
@@ -64,47 +66,56 @@
   </div>
 
   <script>
-    // 1. Okta SDK 설정 (SPA 환경에 맞춰 PKCE 방식 사용)
     const OKTA_DOMAIN = 'https://isd.okta.com';
     const CLIENT_ID = '0oa17gth6xlvuM2U5698';
     const REDIRECT_URI = window.location.origin + window.location.pathname;
 
-    const oktaAuth = new OktaAuth({
-      issuer: `${OKTA_DOMAIN}`,
-      clientId: CLIENT_ID,
-      redirectUri: REDIRECT_URI,
-      pkce: true,
-      scopes: ['openid', 'profile', 'email']
-    });
+    let oktaAuth;
 
-    // 2. 초기화 및 리다이렉트 처리
+    try {
+      oktaAuth = new OktaAuth({
+        issuer: `${OKTA_DOMAIN}`,
+        clientId: CLIENT_ID,
+        redirectUri: REDIRECT_URI,
+        pkce: true,
+        scopes: ['openid', 'profile', 'email']
+      });
+    } catch (e) {
+      console.error('OktaAuth 초기화 실패:', e);
+    }
+
     async function init() {
-      if (oktaAuth.token.isLoginRedirect()) {
-        try {
+      if (!oktaAuth) return;
+      try {
+        if (oktaAuth.token.isLoginRedirect()) {
           const { tokens } = await oktaAuth.token.parseFromUrl();
           oktaAuth.tokenManager.setTokens(tokens);
           window.history.replaceState({}, document.title, REDIRECT_URI);
-        } catch (err) {
-          console.error('Tokens parsing error:', err);
         }
-      }
 
-      const authenticated = await oktaAuth.isAuthenticated();
-      if (authenticated) {
-        showLoggedInUI();
-      } else {
-        showLoggedOutUI();
+        const authenticated = await oktaAuth.isAuthenticated();
+        if (authenticated) {
+          showLoggedInUI();
+        } else {
+          showLoggedOutUI();
+        }
+      } catch (err) {
+        console.error('인증 상태 확인 실패:', err);
+        showError('인증 확인 중 오류가 발생했습니다: ' + err.message);
       }
     }
 
-    // 3. UI 처리 함수
     async function showLoggedInUI() {
       document.getElementById('logged-out-view').classList.add('hidden');
       document.getElementById('logged-in-view').classList.remove('hidden');
 
-      const user = await oktaAuth.getUser();
-      document.getElementById('user-name').innerText = user.name || user.preferred_username || '사용자';
-      document.getElementById('user-email').innerText = user.email || '';
+      try {
+        const user = await oktaAuth.getUser();
+        document.getElementById('user-name').innerText = user.name || user.preferred_username || '사용자';
+        document.getElementById('user-email').innerText = user.email || '';
+      } catch (e) {
+        document.getElementById('user-name').innerText = '인증된 사용자';
+      }
     }
 
     function showLoggedOutUI() {
@@ -112,21 +123,40 @@
       document.getElementById('logged-in-view').classList.add('hidden');
     }
 
-    // 4. 로그인 / 로그아웃 Action
+    function showError(msg) {
+      const errDiv = document.getElementById('error-msg');
+      errDiv.innerText = msg;
+      errDiv.classList.remove('hidden');
+    }
+
+    // 로그인 실행 (SDK 실패 시 직렬 OIDC 리다이렉트 예비 동작 추가)
     function login() {
-      oktaAuth.token.getWithRedirect();
+      if (oktaAuth) {
+        oktaAuth.token.getWithRedirect().catch(err => {
+          console.error('SDK 리다이렉트 실패, 예비 리다이렉트 수행:', err);
+          fallbackLogin();
+        });
+      } else {
+        fallbackLogin();
+      }
+    }
+
+    function fallbackLogin() {
+      const authUrl = `${OKTA_DOMAIN}/oauth2/v1/authorize?client_id=${CLIENT_ID}&response_type=token%20id_token&scope=openid%20profile%20email&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=staticState&nonce=staticNonce`;
+      window.location.href = authUrl;
     }
 
     async function logout() {
-      await oktaAuth.signOut();
+      if (oktaAuth) {
+        await oktaAuth.signOut();
+      } else {
+        window.location.reload();
+      }
     }
 
-    // 5. 데모 스크립트 실행 트리거
     function triggerDemoScript() {
-      // (1) 브라우저 화면 알림
       alert('[Demo Notice] 정상 스크립트 실행 트리거가 호출되었습니다.\n로컬 진단 스크립트 다운로드를 시작합니다.');
 
-      // (2) 안전한 데모용 스크립트 파일(.bat) 동적 생성 및 다운로드 트리거
       const scriptContent = `@echo off\necho [Demo Sandbox] Security diagnostic script executed successfully.\npause`;
       const blob = new Blob([scriptContent], { type: 'text/plain' });
       const link = document.createElement('a');
