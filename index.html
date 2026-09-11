@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Okta OIDC Demo Portal</title>
+  <!-- Tailwind CSS (UI 스타일링) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Okta Auth SDK CDN -->
+  <script src="https://global.oktacdn.com/okta-auth-js/7.4.0/okta-auth-js.min.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+  <div class="max-w-xl w-full bg-slate-800 rounded-xl shadow-2xl border border-slate-700 p-8 text-center">
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-extrabold text-blue-400 mb-2">Security Demo Portal</h1>
+      <p class="text-slate-400 text-sm">Okta OIDC Single Sign-On Verification</p>
+    </div>
+
+    <!-- State 1: 로그인 전 화면 -->
+    <div id="logged-out-view" class="space-y-6">
+      <div class="p-4 bg-slate-700/50 rounded-lg text-slate-300 text-sm border border-slate-600">
+        이 서비스에 접근하려면 Okta 계정을 통한 SSO 인증이 필요합니다.
+      </div>
+      <button id="btn-login" onclick="login()" class="w-full py-3 px-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition duration-200 shadow-lg hover:shadow-blue-500/20">
+        Okta SSO 로그인
+      </button>
+    </div>
+
+    <!-- State 2: 로그인 후 화면 -->
+    <div id="logged-in-view" class="hidden space-y-6">
+      <div class="p-4 bg-emerald-900/30 border border-emerald-500/30 rounded-lg text-left">
+        <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">인증 성공 (User Session)</p>
+        <p class="text-lg font-bold text-white" id="user-name">Loading...</p>
+        <p class="text-sm text-slate-400" id="user-email"></p>
+      </div>
+
+      <!-- 데모 메뉴 영역 -->
+      <div class="space-y-3 text-left">
+        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Demo Actions</h2>
+        
+        <button onclick="triggerDemoScript()" class="w-full text-left p-4 bg-slate-700 hover:bg-slate-650 rounded-lg border border-slate-600 transition flex items-center justify-between group">
+          <div>
+            <div class="font-semibold text-white group-hover:text-blue-300">1. 시스템 업데이트 스크립트 실행</div>
+            <div class="text-xs text-slate-400">보안 정책 검증용 데모 스크립트를 다운로드 및 실행 시도합니다.</div>
+          </div>
+          <span class="text-blue-400 text-xl">➔</span>
+        </button>
+
+        <button onclick="alert('일반 업무 메뉴입니다.')" class="w-full text-left p-4 bg-slate-700 hover:bg-slate-650 rounded-lg border border-slate-600 transition flex items-center justify-between group">
+          <div>
+            <div class="font-semibold text-white">2. 보안 리포트 조회</div>
+            <div class="text-xs text-slate-400">일반 대시보드 조회 기능</div>
+          </div>
+          <span class="text-slate-400 text-xl">➔</span>
+        </button>
+      </div>
+
+      <button onclick="logout()" class="w-full py-2.5 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium rounded-lg transition">
+        로그아웃
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 1. Okta SDK 설정 (SPA 환경에 맞춰 PKCE 방식 사용)
+    const OKTA_DOMAIN = 'https://isd.okta.com';
+    const CLIENT_ID = '0oa17gth6xlvuM2U5698';
+    const REDIRECT_URI = window.location.origin + window.location.pathname;
+
+    const oktaAuth = new OktaAuth({
+      issuer: `${OKTA_DOMAIN}`,
+      clientId: CLIENT_ID,
+      redirectUri: REDIRECT_URI,
+      pkce: true,
+      scopes: ['openid', 'profile', 'email']
+    });
+
+    // 2. 초기화 및 리다이렉트 처리
+    async function init() {
+      if (oktaAuth.token.isLoginRedirect()) {
+        try {
+          const { tokens } = await oktaAuth.token.parseFromUrl();
+          oktaAuth.tokenManager.setTokens(tokens);
+          window.history.replaceState({}, document.title, REDIRECT_URI);
+        } catch (err) {
+          console.error('Tokens parsing error:', err);
+        }
+      }
+
+      const authenticated = await oktaAuth.isAuthenticated();
+      if (authenticated) {
+        showLoggedInUI();
+      } else {
+        showLoggedOutUI();
+      }
+    }
+
+    // 3. UI 처리 함수
+    async function showLoggedInUI() {
+      document.getElementById('logged-out-view').classList.add('hidden');
+      document.getElementById('logged-in-view').classList.remove('hidden');
+
+      const user = await oktaAuth.getUser();
+      document.getElementById('user-name').innerText = user.name || user.preferred_username || '사용자';
+      document.getElementById('user-email').innerText = user.email || '';
+    }
+
+    function showLoggedOutUI() {
+      document.getElementById('logged-out-view').classList.remove('hidden');
+      document.getElementById('logged-in-view').classList.add('hidden');
+    }
+
+    // 4. 로그인 / 로그아웃 Action
+    function login() {
+      oktaAuth.token.getWithRedirect();
+    }
+
+    async function logout() {
+      await oktaAuth.signOut();
+    }
+
+    // 5. 데모 스크립트 실행 트리거
+    function triggerDemoScript() {
+      // (1) 브라우저 화면 알림
+      alert('[Demo Notice] 정상 스크립트 실행 트리거가 호출되었습니다.\n로컬 진단 스크립트 다운로드를 시작합니다.');
+
+      // (2) 안전한 데모용 스크립트 파일(.bat) 동적 생성 및 다운로드 트리거
+      const scriptContent = `@echo off\necho [Demo Sandbox] Security diagnostic script executed successfully.\npause`;
+      const blob = new Blob([scriptContent], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'demo-security-check.bat';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
