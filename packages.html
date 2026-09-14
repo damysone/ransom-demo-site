@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIVID JOURNEY - Curated Packages</title>
-    <!-- Okta Auth JS SDK -->
+    <!-- Okta Auth JS SDK CDN -->
     <script src="https://global.oktacdn.com/okta-auth-js/7.5.1/okta-auth-js.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
@@ -126,16 +126,6 @@
             position: relative;
         }
 
-        .card-image-wrap::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: linear-gradient(to top, rgba(2, 6, 23, 0.8), transparent);
-        }
-
         .card-image {
             width: 100%;
             height: 100%;
@@ -147,92 +137,46 @@
             transform: scale(1.08);
         }
 
-        .badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(2, 6, 23, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #f8fafc;
-            letter-spacing: 0.5px;
-        }
-
-        .card-content {
-            padding: 28px;
+        .card-body {
+            padding: 30px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
 
-        .location {
-            font-size: 12px;
-            color: #ff758c;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
         .card-title {
             font-size: 20px;
-            font-weight: 600;
-            color: #f8fafc;
+            font-weight: 700;
             margin-bottom: 12px;
+            color: #ffffff;
         }
 
         .card-desc {
             font-size: 14px;
             color: #94a3b8;
             line-height: 1.6;
-            margin-bottom: 24px;
-            flex-grow: 1;
+            margin-bottom: 25px;
+            font-weight: 300;
         }
 
-        .btn-book {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
+        .btn-nav {
+            display: inline-block;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
             color: #e2e8f0;
             font-size: 14px;
             font-weight: 600;
             text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 0 5px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .btn-book:hover {
-            background: linear-gradient(135deg, rgba(255, 117, 140, 0.15) 0%, rgba(92, 37, 141, 0.15) 100%);
-            border-color: rgba(255, 117, 140, 0.4);
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.15);
             color: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 117, 140, 0.1);
-        }
-
-        .btn-back {
-            position: relative;
-            z-index: 1;
-            margin-top: 20px;
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        .btn-back:hover {
-            color: #ff758c;
         }
     </style>
 </head>
@@ -242,81 +186,73 @@
     <div class="bg-glow-2"></div>
 
     <div class="header-container">
-        <div class="brand-sub">Private Curation</div>
-        <h1>당신만을 위한 맞춤형 휴양지 리스트 🏝️</h1>
-        <p class="subtitle">인증된 VIVID JOURNEY 프리미엄 멤버에게만 매달 한정 공급되는<br>전 세계 최상위 하이엔드 럭셔리 휴양 명소입니다.</p>
+        <div class="brand-sub">Curated Selection</div>
+        <h1>Exclusive Travel Packages</h1>
+        <p class="subtitle">Okta 인증 회원 전용 프라이빗 리조트 및 최고급 빌라 패키지 목록입니다.</p>
     </div>
 
     <div class="grid-container">
         <div class="package-card">
             <div class="card-image-wrap">
-                <span class="badge">인기 최고</span>
-                <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80" alt="Maldives" class="card-image">
+                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80" class="card-image" alt="Maldives Private Villa">
             </div>
-            <div class="card-content">
-                <div class="location">Maldives</div>
-                <div class="card-title">프라이빗 오션 레지던스</div>
-                <div class="card-desc">끝없는 에메랄드빛 인도양을 독점하는 단 하나의 워터 빌라. 완벽한 프라이버시가 보장되는 인피니티 풀과 24시간 전담 버틀러 서비스가 제공됩니다.</div>
-                <a href="javascript:void(0);" class="btn-book" onclick="alert('컨시어지 데스크에 우선 예약 문의가 접수되었습니다. 담당 큐레이터가 곧 연락드리겠습니다.')">Inquire Package</a>
+            <div class="card-body">
+                <h2 class="card-title">Maldives Private Villa</h2>
+                <p class="card-desc">에메랄드빛 바다 위에서 즐기는 오션뷰 프라이빗 빌라와 스파 하우스.</p>
             </div>
         </div>
 
         <div class="package-card">
             <div class="card-image-wrap">
-                <span class="badge">시즌 한정</span>
-                <img src="https://images.unsplash.com/photo-1548777123-e216912df7d8?auto=format&fit=crop&w=800&q=80" alt="Switzerland" class="card-image">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" class="card-image" alt="Swiss Alpine Retreat">
             </div>
-            <div class="card-content">
-                <div class="location">St. Moritz, Switzerland</div>
-                <div class="card-title">알프스 럭셔리 알프하우스</div>
-                <div class="card-desc">눈부신 만년설을 바라보며 야외 최고급 노천 스파를 즐기는 윈터 시크릿 가든. 최고급 벽난로 룸과 최고 권위 마스터 셰프의 다이닝 코스가 포함되어 있습니다.</div>
-                <a href="javascript:void(0);" class="btn-book" onclick="alert('컨시어지 데스크에 우선 예약 문의가 접수되었습니다. 담당 큐레이터가 곧 연락드리겠습니다.')">Inquire Package</a>
-            </div>
-        </div>
-
-        <div class="package-card">
-            <div class="card-image-wrap">
-                <span class="badge">멤버 추천</span>
-                <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80" alt="Amalfi" class="card-image">
-            </div>
-            <div class="card-content">
-                <div class="location">Amalfi Coast, Italy</div>
-                <div class="card-title">지중해 클리프사이드 빌라</div>
-                <div class="card-desc">아말피 해안의 절벽 꼭대기에 위치하여 지중해 석양을 감상할 수 있는 유서 깊은 대저택. 요트 투어 독점 이용권 및 프라이빗 해변 전용 입장권이 기본 제공됩니다.</div>
-                <a href="javascript:void(0);" class="btn-book" onclick="alert('컨시어지 데스크에 우선 예약 문의가 접수되었습니다. 담당 큐레이터가 곧 연락드리겠습니다.')">Inquire Package</a>
+            <div class="card-body">
+                <h2 class="card-title">Swiss Alpine Retreat</h2>
+                <p class="card-desc">알프스의 웅장한 설경을 배경으로 즐기는 럭셔리 샬레와 힐링 요가.</p>
             </div>
         </div>
     </div>
 
-    <a href="welcome.html" class="btn-back">← Back to Dashboard</a>
+    <div style="z-index: 1; text-align: center; margin-top: 20px;">
+        <a href="welcome.html" class="btn-nav">Back to Welcome</a>
+        <a href="javascript:void(0);" onclick="handleLogout()" class="btn-nav" style="border-color: rgba(255, 117, 140, 0.4); color: #ff758c;">Sign Out</a>
+    </div>
 
 <script>
-    let oktaAuth = null;
     const oktaConfig = {
         issuer: "https://isd.okta.com/oauth2/default",
         clientId: "0oa17gugbkec3KPTK698",
-        redirectUri: "https://tashakur.github.io/ransom-demo-site/welcome.html",
-        scopes: ['openid', 'profile', 'email'],
+        redirectUri: "https://tashakur.github.io/auth0/welcome.html",
+        scopes: ["openid", "profile", "email"],
         pkce: true
     };
 
+    let oktaAuth = null;
+
     window.onload = async () => {
         try {
-            if (typeof OktaAuth === 'undefined') throw new Error("Okta SDK 로드 실패");
-
+            if (!window.OktaAuth) throw new Error("Okta Auth SDK 로드 실패");
             oktaAuth = new OktaAuth(oktaConfig);
+
+            // 로그인 여부 검증
             const isAuthenticated = await oktaAuth.isAuthenticated();
-            
             if (!isAuthenticated) {
-                alert('🔒 멤버십 인증이 필요한 페이지입니다. 로그인 화면으로 이동합니다.');
+                alert("인증이 필요한 페이지입니다. 로그인 페이지로 이동합니다.");
                 window.location.href = 'index.html';
             }
         } catch (error) {
-            console.error("패키지 가드 에러:", error);
+            console.error("인증 확인 중 오류:", error);
             window.location.href = 'index.html';
         }
     };
-</script>
 
+    async function handleLogout() {
+        if (confirm('VIVID JOURNEY에서 로그아웃 하시겠습니까?')) {
+            await oktaAuth.signOut({
+                postLogoutRedirectUri: 'https://tashakur.github.io/auth0/index.html'
+            });
+        }
+    }
+</script>
 </body>
 </html>
