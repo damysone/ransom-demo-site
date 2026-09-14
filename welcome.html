@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to VIVID JOURNEY</title>
-    <!-- Okta Auth JS SDK -->
+    <!-- Okta Auth JS SDK CDN -->
     <script src="https://global.oktacdn.com/okta-auth-js/7.5.1/okta-auth-js.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
@@ -203,44 +203,53 @@
     </div>
 
 <script>
-    let oktaAuth = null;
     const oktaConfig = {
         issuer: "https://isd.okta.com/oauth2/default",
         clientId: "0oa17gugbkec3KPTK698",
-        redirectUri: "https://tashakur.github.io/ransom-demo-site/welcome.html",
-        scopes: ['openid', 'profile', 'email'],
+        redirectUri: "https://tashakur.github.io/auth0/welcome.html",
+        scopes: ["openid", "profile", "email"],
         pkce: true
     };
 
+    let oktaAuth = null;
+
     window.onload = async () => {
         try {
-            if (typeof OktaAuth === 'undefined') throw new Error("Okta SDK 로드 실패");
-            oktaAuth = new OktaAuth(oktaConfig);
-
-            // Okta 로그인 리다이렉트 콜백 파싱 및 토큰 저장
-            if (oktaAuth.isLoginRedirect()) {
-                await oktaAuth.handleLoginRedirect();
+            if (!window.OktaAuth) {
+                throw new Error("Okta Auth SDK 라이브러리가 로드되지 않았습니다.");
             }
 
+            oktaAuth = new OktaAuth(oktaConfig);
+
+            // 1. Okta 인증 후 Redirect Callback 파라미터가 포함되어 돌아온 경우 토큰 처리
+            if (oktaAuth.isLoginRedirect()) {
+                await oktaAuth.handleLoginRedirect();
+                // 브라우저 주소창의 code, state 쿼리 스트링 제거
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // 2. 로그인 세션 확인
             const isAuthenticated = await oktaAuth.isAuthenticated();
             if (!isAuthenticated) {
                 window.location.href = 'index.html';
                 return;
             }
 
+            // 3. Okta UserInfo API 호출하여 사용자 정보 표시
             const user = await oktaAuth.getUser();
             if (user) {
-                const displayName = user.name || user.preferred_username || user.nickname || 'Member';
+                const displayName = user.name || user.given_name || user.preferred_username || 'Member';
                 document.getElementById('welcomeTitle').innerText = `Welcome, ${displayName}!`;
-                document.getElementById('userEmail').innerText = user.email || user.preferred_username || '';
+                document.getElementById('userEmail').innerText = user.email || user.preferred_username || 'Verified Member';
             }
         } catch (error) {
-            console.error("인증 콜백 처리 에러:", error);
-            alert("인증 정보 처리 중 에러가 발생하여 로그인 메인으로 이동합니다.\n원인: " + error.message);
+            console.error("Okta 인증 콜백 처리 에러:", error);
+            alert("인증 정보 처리 중 에러가 발생하여 메인으로 이동합니다.\n원인: " + error.message);
             window.location.href = 'index.html';
         }
     };
 
+    // 로그아웃 처리 (Okta SSO 세션 종료 후 index.html로 리다이렉트)
     async function handleLogout() {
         if (confirm('VIVID JOURNEY에서 로그아웃 하시겠습니까?')) {
             await oktaAuth.signOut({
