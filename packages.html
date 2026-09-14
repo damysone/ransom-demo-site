@@ -49,10 +49,11 @@
             font-size: 15px;
         }
 
+        /* 3개 카드가 한 줄에 딱 맞도록 레이아웃 조정 (1220px) */
         .package-container {
             display: flex;
-            gap: 30px;
-            max-width: 900px;
+            gap: 25px;
+            max-width: 1220px;
             width: 100%;
             justify-content: center;
             flex-wrap: wrap;
@@ -65,13 +66,29 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             overflow: hidden;
-            width: 380px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 360px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .package-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 이벤트 카드 강조 테두리 효과 */
+        .package-card.event-card {
+            border: 1px solid rgba(255, 117, 140, 0.4);
+            box-shadow: 0 0 25px rgba(255, 117, 140, 0.15);
+        }
+
+        .package-card.event-card:hover {
+            box-shadow: 0 20px 40px rgba(255, 117, 140, 0.3);
+            border-color: #ff758c;
         }
 
         .package-card img {
@@ -82,6 +99,10 @@
 
         .package-info {
             padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .package-info h3 {
@@ -94,6 +115,63 @@
             font-size: 14px;
             color: #cbd5e1;
             line-height: 1.6;
+        }
+
+        /* 이벤트 배지 스타일 */
+        .promo-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+        }
+
+        /* 가격 표시 스타일 */
+        .price-tag {
+            margin-top: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .price-tag .original {
+            font-size: 14px;
+            color: #64748b;
+            text-decoration: line-through;
+        }
+
+        .price-tag .discounted {
+            font-size: 22px;
+            font-weight: 800;
+            color: #00f2fe;
+        }
+
+        /* 클릭 유도 CTA 버튼 */
+        .btn-card-action {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            border: none;
+            border-radius: 12px;
+            color: #020617;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-card-action:hover {
+            opacity: 0.95;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
         }
 
         .btn-group {
@@ -142,19 +220,44 @@
     </div>
 
     <div class="package-container">
+        <!-- 1st Card -->
         <div class="package-card">
             <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" alt="Maldives Villa">
             <div class="package-info">
-                <h3>Maldives Private Villa</h3>
-                <p>에메랄드빛 바다 위에서 즐기는 오션뷰 프라이빗 빌라와 스파 하우스.</p>
+                <div>
+                    <h3>Maldives Private Villa</h3>
+                    <p>에메랄드빛 바다 위에서 즐기는 오션뷰 프라이빗 빌라와 스파 하우스.</p>
+                </div>
             </div>
         </div>
 
+        <!-- 2nd Card -->
         <div class="package-card">
             <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80" alt="Swiss Retreat">
             <div class="package-info">
-                <h3>Swiss Alpine Retreat</h3>
-                <p>알프스의 웅장한 설경을 배경으로 즐기는 럭셔리 샬레와 힐링 요가.</p>
+                <div>
+                    <h3>Swiss Alpine Retreat</h3>
+                    <p>알프스의 웅장한 설경을 배경으로 즐기는 럭셔리 샬레와 힐링 요가.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3rd Card: Event Pricing Promo (English & Click Trigger) -->
+        <div class="package-card event-card">
+            <span class="promo-badge">LIMITED EVENT</span>
+            <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80" alt="Santorini Luxury Suite">
+            <div class="package-info">
+                <div>
+                    <h3>Santorini VIP Escape</h3>
+                    <p>Exclusive Okta member special! Enjoy breathtaking caldera views with private infinity pool.</p>
+                    <div class="price-tag">
+                        <span class="original">$850</span>
+                        <span class="discounted">$499 / night</span>
+                    </div>
+                </div>
+                <button class="btn-card-action" onclick="alert('Okta VIP 멤버 전용 40% 이벤트 할인이 적용되었습니다!')">
+                    Claim Special Rate →
+                </button>
             </div>
         </div>
     </div>
@@ -175,12 +278,15 @@
 
         async function handleLogout() {
             try {
-                // Okta 세션 종료 후 바로 index.html로 이동
+                window.localStorage.clear();
+                window.sessionStorage.clear();
                 await oktaAuth.signOut({
                     postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
                 });
             } catch (e) {
                 console.error("로그아웃 오류:", e);
+                window.localStorage.clear();
+                window.sessionStorage.clear();
                 window.location.href = 'index.html';
             }
         }
