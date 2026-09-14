@@ -123,7 +123,7 @@
                 // 1. URL에 code 파라미터가 포함되어 들어온 최초 로그인 리다이렉트 시점
                 if (hasCode) {
                     await oktaAuth.handleLoginRedirect();
-                    // 토큰 교환 성공 후 주소창의 ?code=... 파라미터 제거 (새로고침 무한 루프 방지)
+                    // 토큰 교환 성공 후 주소창의 ?code=... 파라미터 제거
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
 
@@ -134,13 +134,11 @@
                     const user = await oktaAuth.getUser();
                     renderWelcomeUI(user);
                 } else {
-                    // 세션이 없으면 로그인 페이지로 이동
                     window.location.href = 'index.html';
                 }
             } catch (err) {
                 console.error("인증 처리 중 오류:", err);
                 
-                // 이미 교환된 코드로 접근했더라도 저장된 토큰이 남아있는지 확인
                 const hasToken = await oktaAuth.isAuthenticated();
                 if (hasToken) {
                     window.history.replaceState({}, document.title, window.location.pathname);
@@ -165,7 +163,7 @@
                     일상에서 벗어나 당신이 마주할 특별한 여정,<br>
                     엄선된 프리미엄 프라이빗 큐레이션이 지금 시작됩니다. ✈️🍹
                 </p>
-                <button class="btn-primary" onclick="alert('큐레이션 패키지를 준비 중입니다.')">Explore Curated Packages</button>
+                <button class="btn-primary" onclick="window.location.href='packages.html'">Explore Curated Packages</button>
                 <br>
                 <button class="btn-secondary" onclick="handleLogout()">SIGN OUT / LOGOUT</button>
             `;
