@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VIVID JOURNEY - Premium Travel Curation</title>
-    <!-- Okta Auth JS SDK -->
+    <!-- Okta Auth JS SDK CDN -->
     <script src="https://global.oktacdn.com/okta-auth-js/7.5.1/okta-auth-js.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
@@ -338,31 +338,32 @@
     </div>
 
 <script>
-    let oktaAuth = null;
+    // Okta OIDC 설정
     const oktaConfig = {
-        issuer: "https://isd.okta.com/oauth2/default",
+        issuer: "https://isd.okta.com/oauth2/default", // Org Authorization Server 사용 시: "https://isd.okta.com"
         clientId: "0oa17gugbkec3KPTK698",
-        redirectUri: "https://tashakur.github.io/ransom-demo-site/welcome.html",
-        scopes: ['openid', 'profile', 'email'],
+        redirectUri: "https://tashakur.github.io/auth0/welcome.html",
+        scopes: ["openid", "profile", "email"],
         pkce: true
     };
 
+    let oktaAuth = null;
+
     window.onload = async () => {
         try {
-            if (typeof OktaAuth === 'undefined') {
-                throw new Error("Okta SDK 라이브러리가 브라우저에 로드되지 않았습니다.");
+            if (!window.OktaAuth) {
+                throw new Error("Okta Auth SDK 라이브러리가 로드되지 않았습니다.");
             }
 
             oktaAuth = new OktaAuth(oktaConfig);
-            
-            // 이미 로그인 상태라면 대시보드로 이동
+
+            // 이미 로그인되어 유효한 토큰이 있는 경우 welcome 페이지로 즉시 이동
             const isAuthenticated = await oktaAuth.isAuthenticated();
             if (isAuthenticated) {
                 window.location.href = 'welcome.html';
             }
         } catch (error) {
-            console.error("Okta 초기화 실패:", error);
-            alert("⚠️ Okta 시스템 초기화 실패!\n원인: " + error.message);
+            console.error("Okta 초기화 오류:", error);
         }
     };
 
@@ -376,12 +377,11 @@
         }
     }
 
-    // 로그인 처리
+    // 로그인 실행 (Okta Hosted Sign-In 페이지로 리다이렉션)
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
         if (!oktaAuth) {
-            alert("⚠️ 인증 서버 초기화가 완료되지 않았습니다.");
+            alert("Okta SDK 초기화 중입니다. 잠시 후 다시 시도해 주세요.");
             return;
         }
 
@@ -391,19 +391,15 @@
                 loginHint: emailHint
             });
         } catch (err) {
-            console.error("로그인 리다이렉트 오류:", err);
-            alert("Okta 로그인 창으로 이동하는 중 오류가 발생했습니다: " + err.message);
+            console.error("Okta 로그인 리다이렉트 오류:", err);
+            alert("Okta 로그인 창 이동 중 오류가 발생했습니다: " + err.message);
         }
     });
 
-    // 회원가입 처리
+    // 회원가입 버튼 실행
     document.getElementById('signupForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        if (!oktaAuth) {
-            alert("⚠️ 인증 서버 초기화 실패로 요청을 처리할 수 없습니다.");
-            return;
-        }
+        if (!oktaAuth) return;
 
         const emailHint = document.getElementById('newEmail').value.trim();
         try {
@@ -411,8 +407,8 @@
                 loginHint: emailHint
             });
         } catch (err) {
-            console.error("회원가입 리다이렉트 오류:", err);
-            alert("Okta 회원가입 창으로 이동하는 중 오류가 발생했습니다: " + err.message);
+            console.error("Okta 가입 리다이렉트 오류:", err);
+            alert("Okta 페이지 이동 중 오류가 발생했습니다: " + err.message);
         }
     });
 </script>
