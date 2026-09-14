@@ -28,7 +28,6 @@
             position: relative;
         }
 
-        /* 배경 조명 글로우 애니메이션 */
         .bg-glow-1 {
             position: absolute;
             width: 550px;
@@ -54,7 +53,6 @@
             100% { transform: translate(60px, 40px) scale(1.15); }
         }
 
-        /* 메인 카드 레이아웃 (글래스모피즘) */
         .main-card {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -79,7 +77,6 @@
             .left-panel { display: none; }
         }
 
-        /* 좌측 비주얼 패널 */
         .left-panel {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(2, 6, 23, 0.8));
             padding: 55px;
@@ -100,9 +97,7 @@
             transition: opacity 0.5s;
         }
 
-        .left-panel:hover::before {
-            opacity: 0.35;
-        }
+        .left-panel:hover::before { opacity: 0.35; }
 
         .brand-logo {
             font-size: 20px;
@@ -134,11 +129,7 @@
             font-weight: 300;
         }
 
-        .tag-group {
-            display: flex;
-            gap: 10px;
-            z-index: 1;
-        }
+        .tag-group { display: flex; gap: 10px; z-index: 1; }
 
         .tag {
             padding: 6px 16px;
@@ -150,7 +141,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* 우측 폼 패널 */
         .right-panel {
             padding: 55px;
             display: flex;
@@ -165,18 +155,14 @@
             animation: fadeIn 0.5s ease-in-out forwards;
         }
 
-        .form-section.active {
-            display: block;
-        }
+        .form-section.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .form-header {
-            margin-bottom: 35px;
-        }
+        .form-header { margin-bottom: 35px; }
 
         .form-header h2 {
             font-size: 30px;
@@ -191,7 +177,6 @@
             line-height: 1.5;
         }
 
-        /* 플로팅 라벨 인풋 디자인 */
         .input-container {
             position: relative;
             margin-bottom: 24px;
@@ -238,7 +223,6 @@
             font-weight: 600;
         }
 
-        /* 그라데이션 제출 버튼 */
         .btn-submit {
             width: 100%;
             padding: 16px;
@@ -289,7 +273,6 @@
     <div class="bg-glow-2"></div>
 
     <div class="main-card">
-        <!-- 좌측 패널 -->
         <div class="left-panel">
             <div class="brand-logo">VIVID JOURNEY</div>
             <div class="intro-text">
@@ -303,9 +286,7 @@
             </div>
         </div>
 
-        <!-- 우측 폼 패널 -->
         <div class="right-panel">
-            <!-- Sign In 섹션 -->
             <div id="loginSection" class="form-section active">
                 <div class="form-header">
                     <h2>Sign In</h2>
@@ -325,7 +306,6 @@
                 </div>
             </div>
 
-            <!-- Sign Up 섹션 -->
             <div id="signupSection" class="form-section">
                 <div class="form-header">
                     <h2>Create Account</h2>
@@ -348,15 +328,14 @@
     </div>
 
     <script>
-        // Okta Auth SDK 초기화
         const oktaAuth = new OktaAuth({
             issuer: 'https://isd.okta.com/oauth2/default',
             clientId: '0oa17gugbkec3KPTK698',
             redirectUri: 'https://damysone.github.io/ransom-demo-site/welcome.html',
+            postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html',
             pkce: true
         });
 
-        // 페이지 로드시 로그인 유효 세션 체크
         window.addEventListener('load', async () => {
             try {
                 const isAuthenticated = await oktaAuth.isAuthenticated();
@@ -364,11 +343,11 @@
                     window.location.href = 'welcome.html';
                 }
             } catch (error) {
-                console.error("Okta 초기화 및 세션 체크 오류:", error);
+                console.error("Okta 세션 체크 오류:", error);
+                await oktaAuth.tokenManager.clear();
             }
         });
 
-        // Sign In <-> Sign Up 폼 전환
         function toggleForm(mode) {
             if (mode === 'signup') {
                 document.getElementById('loginSection').classList.remove('active');
@@ -379,45 +358,29 @@
             }
         }
 
-        // Sign In 제출 처리
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const emailHint = document.getElementById('username').value.trim();
-            
-            const options = {
-                scopes: ['openid', 'profile', 'email']
-            };
-
-            if (emailHint) {
-                options.loginHint = emailHint;
-            }
+            const options = { scopes: ['openid', 'profile', 'email'] };
+            if (emailHint) options.loginHint = emailHint;
 
             try {
                 await oktaAuth.token.getWithRedirect(options);
             } catch (err) {
                 console.error("로그인 리다이렉트 오류:", err);
-                alert("Okta 로그인 화면으로 이동하는 중 오류가 발생했습니다: " + err.message);
             }
         });
 
-        // Sign Up 제출 처리
         document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const emailHint = document.getElementById('newEmail').value.trim();
-            
-            const options = {
-                scopes: ['openid', 'profile', 'email']
-            };
-
-            if (emailHint) {
-                options.loginHint = emailHint;
-            }
+            const options = { scopes: ['openid', 'profile', 'email'] };
+            if (emailHint) options.loginHint = emailHint;
 
             try {
                 await oktaAuth.token.getWithRedirect(options);
             } catch (err) {
                 console.error("회원가입 리다이렉트 오류:", err);
-                alert("Okta 인증 화면으로 이동하는 중 오류가 발생했습니다: " + err.message);
             }
         });
     </script>
