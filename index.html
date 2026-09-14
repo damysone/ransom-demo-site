@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIVID JOURNEY</title>
+    <title>VIVID JOURNEY - Sign In</title>
     <!-- Okta Auth SDK -->
     <script src="https://global.oktacdn.com/okta-auth-js/7.4.0/okta-auth-js.min.js"></script>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), 
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
                         url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             height: 100vh;
@@ -20,61 +24,210 @@
             justify-content: center;
             color: #fff;
         }
-        .card {
-            background: rgba(18, 24, 38, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+
+        /* 메인 컨테이너 (2단 레이아웃) */
+        .container {
+            display: flex;
+            width: 920px;
+            min-height: 540px;
+            background: rgba(15, 20, 28, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 24px;
-            padding: 48px 36px;
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
         }
+
+        /* 좌측 비주얼 영역 */
+        .left-banner {
+            flex: 1;
+            padding: 48px 40px;
+            background: linear-gradient(135deg, rgba(16, 24, 39, 0.85) 0%, rgba(10, 15, 26, 0.75) 100%),
+                        url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1000&q=80') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
         .logo {
             font-size: 13px;
             font-weight: 800;
             letter-spacing: 3px;
             color: #00e5ff;
-            margin-bottom: 24px;
+            text-transform: uppercase;
         }
-        h1 {
-            font-size: 30px;
-            margin: 0 0 16px;
+
+        .hero-title {
+            font-size: 32px;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 1.25;
+            color: #ffffff;
+            margin-bottom: 16px;
         }
-        p {
+
+        .hero-desc {
+            font-size: 13px;
             color: #a0aec0;
-            font-size: 14px;
             line-height: 1.6;
             margin-bottom: 32px;
+            word-break: keep-all;
         }
-        .btn-primary {
+
+        /* 좌측 하단 태그 목록 */
+        .tag-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        /* 우측 로그인 폼 영역 */
+        .right-section {
+            flex: 1;
+            padding: 56px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(18, 24, 35, 0.9);
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .form-subtitle {
+            font-size: 13px;
+            color: #a0aec0;
+            line-height: 1.5;
+            margin-bottom: 36px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-field::placeholder {
+            color: #64748b;
+        }
+
+        .input-field:focus {
+            border-color: #00e5ff;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.15);
+        }
+
+        .btn-submit {
             width: 100%;
             padding: 16px;
             background: #00e5ff;
             border: none;
             border-radius: 12px;
             color: #0d1117;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0, 229, 255, 0.3);
         }
-        .btn-primary:hover {
+
+        .btn-submit:hover {
             background: #33ebff;
             transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 229, 255, 0.45);
+        }
+
+        .footer-text {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 13px;
+            color: #a0aec0;
+        }
+
+        .footer-link {
+            color: #00e5ff;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 868px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+            }
+            .left-banner {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo">VIVID JOURNEY</div>
-        <h1>Crafting Your<br>Perfect Escape.</h1>
-        <p>완벽한 휴양을 넘어 삶의 감각을 깨우게 해줄 프리미엄 프라이빗 큐레이션 서비스를 경험해보세요.</p>
-        <button class="btn-primary" onclick="handleLogin()">Sign In with Okta</button>
+
+    <div class="container">
+        <!-- 좌측 이미지 & 브랜드 설명 -->
+        <div class="left-banner">
+            <div class="logo">VIVID JOURNEY</div>
+            <div>
+                <h1 class="hero-title">Crafting<br>Your Perfect<br>Escape.</h1>
+                <p class="hero-desc">
+                    평범한 일상을 벗어나 오직 당신만을 위해 세심하게 설계된 프리미엄 프라이빗 휴양지와 특별한 여정을 만나보세요.
+                </p>
+            </div>
+            <div class="tag-group">
+                <span class="tag">#Luxury_Resort</span>
+                <span class="tag">#Private_Villa</span>
+                <span class="tag">#Family_Curation</span>
+            </div>
+        </div>
+
+        <!-- 우측 로그인 폼 -->
+        <div class="right-section">
+            <h2 class="form-title">Sign In</h2>
+            <p class="form-subtitle">멤버십 계정으로 로그인하고<br>엄선된 맞춤형 여행 패키지를 확인하세요.</p>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <input type="text" id="username" class="input-field" placeholder="ID / Email" autocomplete="username">
+                </div>
+                <button type="submit" class="btn-submit">Explore Your Journey</button>
+            </form>
+
+            <div class="footer-text">
+                아직 회원이 아니신가요? <a href="#" class="footer-link" onclick="handleLogin(event)">Sign Up</a>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -85,10 +238,20 @@
             pkce: true
         });
 
-        function handleLogin() {
-            oktaAuth.token.getWithRedirect({
+        function handleLogin(event) {
+            if (event) event.preventDefault();
+            
+            const usernameInput = document.getElementById('username').value.trim();
+            const options = {
                 scopes: ['openid', 'profile', 'email']
-            });
+            };
+
+            // ID/Email 입력창에 값이 있으면 Okta 로그인 화면으로 미리 전달
+            if (usernameInput) {
+                options.loginHint = usernameInput;
+            }
+
+            oktaAuth.token.getWithRedirect(options);
         }
     </script>
 </body>
