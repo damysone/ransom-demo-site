@@ -90,12 +90,12 @@
                     const user = await oktaAuth.getUser();
                     renderWelcomeUI(user);
                 } else {
-                    // 인증되어 있지 않다면 즉시 로그인 화면으로 리다이렉트
+                    await oktaAuth.tokenManager.clear();
                     window.location.href = 'index.html';
                 }
             } catch (err) {
-                console.error("인증 확인 중 오류 발생:", err);
-                // 에러 발생 시 멈추지 않고 즉시 index.html로 이동
+                console.error("인증 확인 오류:", err);
+                await oktaAuth.tokenManager.clear();
                 window.location.href = 'index.html';
             }
         }
@@ -121,11 +121,15 @@
 
         async function handleLogout() {
             try {
+                // 1. 브라우저 로컬 스토리지 토큰 강제 초기화
+                await oktaAuth.tokenManager.clear();
+                // 2. Okta SSO 세션 로그아웃 진행
                 await oktaAuth.signOut({
                     postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
                 });
             } catch (e) {
                 console.error("로그아웃 오류:", e);
+                await oktaAuth.tokenManager.clear();
                 window.location.href = 'index.html';
             }
         }
