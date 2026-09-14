@@ -4,259 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to VIVID JOURNEY</title>
-    <!-- Okta Auth JS SDK CDN -->
-    <script src="https://global.oktacdn.com/okta-auth-js/7.5.1/okta-auth-js.min.js"></script>
+    <!-- Okta Auth SDK -->
+    <script src="https://global.oktacdn.com/okta-auth-js/7.4.0/okta-auth-js.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(rgba(2, 6, 23, 0.65), rgba(2, 6, 23, 0.85)), 
-                        url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
-            color: #ffffff;
-            overflow: hidden;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), 
+                        url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
             height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            position: relative;
+            justify-content: center;
+            color: #fff;
         }
-
-        .bg-glow-1 {
-            position: absolute;
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(255, 117, 140, 0.18) 0%, rgba(0,0,0,0) 70%);
-            top: -10%;
-            left: -15%;
-            animation: float 14s infinite alternate ease-in-out;
-        }
-
-        .bg-glow-2 {
-            position: absolute;
-            width: 650px;
-            height: 650px;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, rgba(0,0,0,0) 70%);
-            bottom: -15%;
-            right: -15%;
-            animation: float 20s infinite alternate-reverse ease-in-out;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 60px) scale(1.1); }
-        }
-
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+        .card {
+            background: rgba(18, 24, 38, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 60px 50px;
-            border-radius: 28px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            border-radius: 24px;
+            padding: 48px 36px;
+            width: 100%;
+            max-width: 420px;
             text-align: center;
-            width: 500px;
-            z-index: 10;
-            animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
-
-        @keyframes scaleUp {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .success-icon-wrap {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2) 0%, rgba(255, 117, 140, 0.2) 100%);
-            border: 1px solid rgba(0, 242, 254, 0.4);
+        .check-icon {
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
+            background: rgba(0, 229, 255, 0.12);
+            border: 2px solid #00e5ff;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin: 0 auto 30px auto;
-            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
-        }
-
-        .success-icon {
-            font-size: 32px;
-            background: linear-gradient(to right, #00f2fe, #4facfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: #00e5ff;
+            font-size: 26px;
             font-weight: bold;
         }
-
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, #ffffff, #cbd5e1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-sub {
-            font-size: 13px;
-            text-transform: uppercase;
+        .badge {
+            color: #00e5ff;
+            font-size: 12px;
+            font-weight: 700;
             letter-spacing: 2px;
-            color: #00f2fe;
-            margin-bottom: 25px;
-            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
         }
-
-        p {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #cbd5e1;
-            margin-bottom: 8px;
-            font-weight: 300;
+        h1 {
+            font-size: 26px;
+            margin: 0 0 16px;
+            font-weight: 700;
         }
-
-        p strong {
-            color: #f8fafc;
-            font-weight: 600;
+        p.info {
+            color: #a0aec0;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 32px;
         }
-
-        .btn-dashboard {
-            display: inline-block;
+        .btn-primary {
             width: 100%;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 14px;
-            color: #e2e8f0;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
             font-size: 15px;
             font-weight: 600;
-            text-decoration: none;
-            margin-top: 35px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
         }
-
-        .btn-dashboard:hover {
-            background: linear-gradient(135deg, #00f2fe 0%, #ff758c 100%);
-            border-color: transparent;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.35);
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
-
-        .btn-dashboard:active {
-            transform: translateY(0);
-        }
-
-        .btn-logout {
-            display: inline-block;
-            margin-top: 20px;
-            color: #94a3b8;
-            font-size: 14px;
+        .btn-secondary {
+            background: none;
+            border: none;
+            color: #718096;
+            font-size: 13px;
             font-weight: 600;
-            text-decoration: none;
             letter-spacing: 1px;
-            text-transform: uppercase;
             cursor: pointer;
-            transition: color 0.3s ease, transform 0.2s;
+            text-transform: uppercase;
+            transition: color 0.2s ease;
         }
-
-        .btn-logout:hover {
-            color: #ff758c; 
-            transform: translateY(-1px);
+        .btn-secondary:hover {
+            color: #e2e8f0;
+        }
+        #loading {
+            font-size: 15px;
+            color: #a0aec0;
         }
     </style>
 </head>
 <body>
-
-    <div class="bg-glow-1"></div>
-    <div class="bg-glow-2"></div>
-
-    <div class="welcome-card">
-        <div class="success-icon-wrap">
-            <span class="success-icon">✓</span>
-        </div>
-        
-        <div class="brand-sub">Verified Member</div>
-        <h1 id="welcomeTitle">Welcome Aboard!</h1>
-        
-        <div style="margin-top: 20px;">
-            <p><strong id="userEmail">Loading...</strong> 멤버십 인증이 완료되었습니다.</p>
-            <p>일상에서 벗어나 당신이 마주할 특별한 여정,</p>
-            <p>엄선된 프리미엄 프라이빗 큐레이션이 지금 시작됩니다. ✈️🍹</p>
-        </div>
-
-        <a href="packages.html" class="btn-dashboard">
-            Explore Curated Packages
-        </a>
-
-        <br>
-        <a href="javascript:void(0);" class="btn-logout" onclick="handleLogout()">
-            Sign Out / Logout
-        </a>
+    <div class="card" id="card-content">
+        <div id="loading">인증 정보를 확인하고 있습니다...</div>
     </div>
 
-<script>
-    const oktaConfig = {
-        issuer: "https://isd.okta.com/oauth2/default",
-        clientId: "0oa17gugbkec3KPTK698",
-        redirectUri: "https://damysone.github.io/ransom-demo-site/welcome.html",
-        scopes: ["openid", "profile", "email"],
-        pkce: true
-    };
+    <script>
+        const oktaAuth = new OktaAuth({
+            issuer: 'https://isd.okta.com/oauth2/default',
+            clientId: '0oa17gugbkec3KPTK698',
+            redirectUri: 'https://damysone.github.io/ransom-demo-site/welcome.html',
+            postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html',
+            pkce: true
+        });
 
-    let oktaAuth = null;
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasCode = urlParams.has('code');
 
-    window.onload = async () => {
-        try {
-            if (!window.OktaAuth) {
-                throw new Error("Okta Auth SDK 라이브러리가 로드되지 않았습니다.");
+            try {
+                // 1. URL에 code 파라미터가 포함되어 들어온 최초 로그인 리다이렉트 시점
+                if (hasCode) {
+                    await oktaAuth.handleLoginRedirect();
+                    // 토큰 교환 성공 후 주소창의 ?code=... 파라미터 제거 (새로고침 무한 루프 방지)
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+
+                // 2. 로그인 토큰 세션 유효성 검증
+                const isAuthenticated = await oktaAuth.isAuthenticated();
+
+                if (isAuthenticated) {
+                    const user = await oktaAuth.getUser();
+                    renderWelcomeUI(user);
+                } else {
+                    // 세션이 없으면 로그인 페이지로 이동
+                    window.location.href = 'index.html';
+                }
+            } catch (err) {
+                console.error("인증 처리 중 오류:", err);
+                
+                // 이미 교환된 코드로 접근했더라도 저장된 토큰이 남아있는지 확인
+                const hasToken = await oktaAuth.isAuthenticated();
+                if (hasToken) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    const user = await oktaAuth.getUser();
+                    renderWelcomeUI(user);
+                } else {
+                    window.location.href = 'index.html';
+                }
             }
+        }
 
-            oktaAuth = new OktaAuth(oktaConfig);
+        function renderWelcomeUI(user) {
+            const userName = user.name || user.preferred_username || 'Member';
+            const userEmail = user.email || user.sub || '';
 
-            // 1. Okta 인증 후 Redirect Callback 파라미터가 포함되어 돌아온 경우 토큰 처리
-            if (oktaAuth.isLoginRedirect()) {
-                await oktaAuth.handleLoginRedirect();
-                // 브라우저 주소창의 code, state 쿼리 스트링 제거
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+            document.getElementById('card-content').innerHTML = `
+                <div class="check-icon">✓</div>
+                <div class="badge">VERIFIED MEMBER</div>
+                <h1>Welcome, ${userName}!</h1>
+                <p class="info">
+                    <strong>${userEmail}</strong> 멤버십 인증이 완료되었습니다.<br><br>
+                    일상에서 벗어나 당신이 마주할 특별한 여정,<br>
+                    엄선된 프리미엄 프라이빗 큐레이션이 지금 시작됩니다. ✈️🍹
+                </p>
+                <button class="btn-primary" onclick="alert('큐레이션 패키지를 준비 중입니다.')">Explore Curated Packages</button>
+                <br>
+                <button class="btn-secondary" onclick="handleLogout()">SIGN OUT / LOGOUT</button>
+            `;
+        }
 
-            // 2. 로그인 세션 확인
-            const isAuthenticated = await oktaAuth.isAuthenticated();
-            if (!isAuthenticated) {
+        async function handleLogout() {
+            try {
+                await oktaAuth.signOut({
+                    postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
+                });
+            } catch (e) {
+                console.error("로그아웃 처리 오류:", e);
                 window.location.href = 'index.html';
-                return;
             }
-
-            // 3. Okta UserInfo API 호출하여 사용자 정보 표시
-            const user = await oktaAuth.getUser();
-            if (user) {
-                const displayName = user.name || user.given_name || user.preferred_username || 'Member';
-                document.getElementById('welcomeTitle').innerText = `Welcome, ${displayName}!`;
-                document.getElementById('userEmail').innerText = user.email || user.preferred_username || 'Verified Member';
-            }
-        } catch (error) {
-            console.error("Okta 인증 콜백 처리 에러:", error);
-            alert("인증 정보 처리 중 에러가 발생하여 메인으로 이동합니다.\n원인: " + error.message);
-            window.location.href = 'index.html';
         }
-    };
 
-    // 로그아웃 처리 (Okta SSO 세션 종료 후 index.html로 리다이렉트)
-    async function handleLogout() {
-        if (confirm('VIVID JOURNEY에서 로그아웃 하시겠습니까?')) {
-            await oktaAuth.signOut({
-                postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
-            });
-        }
-    }
-</script>
+        init();
+    </script>
 </body>
 </html>
