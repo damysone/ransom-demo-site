@@ -67,74 +67,81 @@
     <div class="card" id="card-content">
         <div id="loading">인증 정보를 확인하고 있습니다...</div>
     </div>
+<script>
+    const oktaAuth = new OktaAuth({
+        issuer: 'https://isd.okta.com/oauth2/default',
+        clientId: '0oa17gugbkec3KPTK698',
+        redirectUri: 'https://damysone.github.io/ransom-demo-site/welcome.html',
+        postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html',
+        pkce: true
+    });
 
-    <script>
-        const oktaAuth = new OktaAuth({
-            issuer: 'https://isd.okta.com/oauth2/default',
-            clientId: '0oa17gugbkec3KPTK698',
-            redirectUri: 'https://damysone.github.io/ransom-demo-site/welcome.html',
-            postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html',
-            pkce: true
-        });
-
-        async function init() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('code')) {
-                    await oktaAuth.handleLoginRedirect();
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-
-                const isAuthenticated = await oktaAuth.isAuthenticated();
-                if (isAuthenticated) {
-                    const user = await oktaAuth.getUser();
-                    renderWelcomeUI(user);
-                } else {
-                    await oktaAuth.tokenManager.clear();
-                    window.location.href = 'index.html';
-                }
-            } catch (err) {
-                console.error("인증 확인 오류:", err);
-                await oktaAuth.tokenManager.clear();
-                window.location.href = 'index.html';
+    async function init() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // 1. Authorization Code가 들어왔을 때 처리
+            if (urlParams.has('code')) {
+                await oktaAuth.handleLoginRedirect();
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
-        }
 
-        function renderWelcomeUI(user) {
-            const userName = user.name || user.preferred_username || 'Member';
-            const userEmail = user.email || user.sub || '';
-
-            document.getElementById('card-content').innerHTML = `
-                <div class="check-icon">✓</div>
-                <div class="badge">VERIFIED MEMBER</div>
-                <h1>Welcome, ${userName}!</h1>
-                <p class="info">
-                    <strong>${userEmail}</strong> 멤버십 인증이 완료되었습니다.<br><br>
-                    일상에서 벗어나 당신이 마주할 특별한 여정,<br>
-                    엄선된 프리미엄 프라이빗 큐레이션이 지금 시작됩니다. ✈️🍹
-                </p>
-                <button class="btn-primary" onclick="window.location.href='packages.html'">Explore Curated Packages</button>
-                <br>
-                <button class="btn-secondary" onclick="handleLogout()">SIGN OUT / LOGOUT</button>
-            `;
-        }
-
-        async function handleLogout() {
-            try {
-                // 1. 브라우저 로컬 스토리지 토큰 강제 초기화
-                await oktaAuth.tokenManager.clear();
-                // 2. Okta SSO 세션 로그아웃 진행
-                await oktaAuth.signOut({
-                    postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
-                });
-            } catch (e) {
-                console.error("로그아웃 오류:", e);
-                await oktaAuth.tokenManager.clear();
-                window.location.href = 'index.html';
+            // 2. 인증 여부 확인
+            const isAuthenticated = await oktaAuth.isAuthenticated();
+            if (isAuthenticated) {
+                const user = await oktaAuth.getUser();
+                renderWelcomeUI(user);
+            } else {
+                // 토큰 완전히 비우고 index.html로 이동
+                window.localStorage.clear();
+                window.sessionStorage.clear();
+                window.location.replace('index.html');
             }
+        } catch (err) {
+            console.error("인증 확인 오류:", err);
+            window.localStorage.clear();
+            window.sessionStorage.clear();
+            window.location.replace('index.html');
         }
+    }
 
-        init();
-    </script>
+    function renderWelcomeUI(user) {
+        const userName = user.name || user.preferred_username || 'Member';
+        const userEmail = user.email || user.sub || '';
+
+        document.getElementById('card-content').innerHTML = `
+            <div class="check-icon">✓</div>
+            <div class="badge">VERIFIED MEMBER</div>
+            <h1>Welcome, ${userName}!</h1>
+            <p class="info">
+                <strong>${userEmail}</strong> 멤버십 인증이 완료되었습니다.<br><br>
+                일상에서 벗어나 당신이 마주할 특별한 여정,<br>
+                엄선된 프리미엄 프라이빗 큐레이션이 지금 시작됩니다. ✈️🍹
+            </p>
+            <button class="btn-primary" onclick="window.location.href='packages.html'">Explore Curated Packages</button>
+            <br>
+            <button class="btn-secondary" onclick="handleLogout()">SIGN OUT / LOGOUT</button>
+        `;
+    }
+
+    async function handleLogout() {
+        try {
+            // 브라우저 내 Okta 토큰 및 세션 정보 완전 삭제
+            window.localStorage.clear();
+            window.sessionStorage.clear();
+
+            // Okta 서버 로그아웃 호출 (실패하더라도 catch에서 무조건 index.html로 이동)
+            await oktaAuth.signOut({
+                postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
+            });
+        } catch (e) {
+            console.error("로그아웃 처리 중 오류 발생 (강제 이동):", e);
+            window.location.replace('index.html');
+        }
+    }
+
+    init();
+</script>
+    
 </body>
 </html>
