@@ -3,256 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIVID JOURNEY - Curated Packages</title>
-    <!-- Okta Auth JS SDK CDN -->
-    <script src="https://global.oktacdn.com/okta-auth-js/7.5.1/okta-auth-js.min.js"></script>
+    <title>Curated Packages - VIVID JOURNEY</title>
+    <!-- Okta Auth SDK -->
+    <script src="https://global.oktacdn.com/okta-auth-js/7.4.0/okta-auth-js.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
         body {
-            background: linear-gradient(rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.9)), 
+            background: linear-gradient(rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.85)), 
                         url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
             color: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
-            overflow-x: hidden;
-            overflow-y: auto;
+            justify-content: center;
             padding: 40px 20px;
         }
 
-        .bg-glow-1 {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255, 117, 140, 0.15) 0%, rgba(0,0,0,0) 70%);
-            top: -150px;
-            left: -150px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .bg-glow-2 {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(92, 37, 141, 0.2) 0%, rgba(0,0,0,0) 70%);
-            bottom: -150px;
-            right: -150px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .header-container {
-            position: relative;
-            z-index: 1;
+        .header-title {
             text-align: center;
-            max-width: 800px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
-        .brand-sub {
+        .header-title .badge {
+            color: #ff758c;
             font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 4px;
+            font-weight: 700;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        h1 {
-            font-size: 32px;
+        .header-title h1 {
+            font-size: 36px;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 16px;
-            background: linear-gradient(to right, #ffffff, #cbd5e1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
 
-        .subtitle {
+        .header-title p {
             color: #94a3b8;
-            font-size: 16px;
-            line-height: 1.6;
-            font-weight: 400;
+            font-size: 15px;
         }
 
-        .grid-container {
-            position: relative;
-            z-index: 1;
+        .package-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             gap: 30px;
-            max-width: 1200px;
+            max-width: 900px;
             width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
             margin-bottom: 40px;
         }
 
         .package-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            width: 360px;
-            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.4s;
-            display: flex;
-            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            overflow: hidden;
+            width: 380px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .package-card:hover {
             transform: translateY(-8px);
-            border-color: rgba(255, 117, 140, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 117, 140, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .card-image-wrap {
+        .package-card img {
             width: 100%;
             height: 220px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .card-image {
-            width: 100%;
-            height: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease;
         }
 
-        .package-card:hover .card-image {
-            transform: scale(1.08);
+        .package-info {
+            padding: 24px;
         }
 
-        .card-body {
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .card-title {
+        .package-info h3 {
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 12px;
-            color: #ffffff;
+            margin-bottom: 8px;
         }
 
-        .card-desc {
+        .package-info p {
             font-size: 14px;
-            color: #94a3b8;
+            color: #cbd5e1;
             line-height: 1.6;
-            margin-bottom: 25px;
-            font-weight: 300;
         }
 
-        .btn-nav {
-            display: inline-block;
-            padding: 12px 28px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
             border-radius: 12px;
-            color: #e2e8f0;
             font-size: 14px;
             font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            margin: 0 5px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
         }
 
-        .btn-nav:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow-1"></div>
-    <div class="bg-glow-2"></div>
-
-    <div class="header-container">
-        <div class="brand-sub">Curated Selection</div>
+    <div class="header-title">
+        <span class="badge">CURATED SELECTION</span>
         <h1>Exclusive Travel Packages</h1>
-        <p class="subtitle">Okta 인증 회원 전용 프라이빗 리조트 및 최고급 빌라 패키지 목록입니다.</p>
+        <p>Okta 인증 회원 전용 프라이빗 리조트 및 최고급 빌라 패키지 목록입니다.</p>
     </div>
 
-    <div class="grid-container">
+    <div class="package-container">
         <div class="package-card">
-            <div class="card-image-wrap">
-                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80" class="card-image" alt="Maldives Private Villa">
-            </div>
-            <div class="card-body">
-                <h2 class="card-title">Maldives Private Villa</h2>
-                <p class="card-desc">에메랄드빛 바다 위에서 즐기는 오션뷰 프라이빗 빌라와 스파 하우스.</p>
+            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" alt="Maldives Villa">
+            <div class="package-info">
+                <h3>Maldives Private Villa</h3>
+                <p>에메랄드빛 바다 위에서 즐기는 오션뷰 프라이빗 빌라와 스파 하우스.</p>
             </div>
         </div>
 
         <div class="package-card">
-            <div class="card-image-wrap">
-                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" class="card-image" alt="Swiss Alpine Retreat">
-            </div>
-            <div class="card-body">
-                <h2 class="card-title">Swiss Alpine Retreat</h2>
-                <p class="card-desc">알프스의 웅장한 설경을 배경으로 즐기는 럭셔리 샬레와 힐링 요가.</p>
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80" alt="Swiss Retreat">
+            <div class="package-info">
+                <h3>Swiss Alpine Retreat</h3>
+                <p>알프스의 웅장한 설경을 배경으로 즐기는 럭셔리 샬레와 힐링 요가.</p>
             </div>
         </div>
     </div>
 
-    <div style="z-index: 1; text-align: center; margin-top: 20px;">
-        <a href="welcome.html" class="btn-nav">Back to Welcome</a>
-        <a href="javascript:void(0);" onclick="handleLogout()" class="btn-nav" style="border-color: rgba(255, 117, 140, 0.4); color: #ff758c;">Sign Out</a>
+    <div class="btn-group">
+        <button class="btn btn-secondary" onclick="window.location.href='welcome.html'">Back to Welcome</button>
+        <button class="btn btn-danger" onclick="handleLogout()">Sign Out</button>
     </div>
 
-<script>
-    const oktaConfig = {
-        issuer: "https://isd.okta.com/oauth2/default",
-        clientId: "0oa17gugbkec3KPTK698",
-        redirectUri: "https://tashakur.github.io/auth0/welcome.html",
-        scopes: ["openid", "profile", "email"],
-        pkce: true
-    };
+    <script>
+        const oktaAuth = new OktaAuth({
+            issuer: 'https://isd.okta.com/oauth2/default',
+            clientId: '0oa17gugbkec3KPTK698',
+            redirectUri: 'https://damysone.github.io/ransom-demo-site/welcome.html',
+            postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html',
+            pkce: true
+        });
 
-    let oktaAuth = null;
-
-    window.onload = async () => {
-        try {
-            if (!window.OktaAuth) throw new Error("Okta Auth SDK 로드 실패");
-            oktaAuth = new OktaAuth(oktaConfig);
-
-            // 로그인 여부 검증
-            const isAuthenticated = await oktaAuth.isAuthenticated();
-            if (!isAuthenticated) {
-                alert("인증이 필요한 페이지입니다. 로그인 페이지로 이동합니다.");
+        async function handleLogout() {
+            try {
+                // Okta 세션 종료 후 바로 index.html로 이동
+                await oktaAuth.signOut({
+                    postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
+                });
+            } catch (e) {
+                console.error("로그아웃 오류:", e);
                 window.location.href = 'index.html';
             }
-        } catch (error) {
-            console.error("인증 확인 중 오류:", error);
-            window.location.href = 'index.html';
         }
-    };
-
-    async function handleLogout() {
-        if (confirm('VIVID JOURNEY에서 로그아웃 하시겠습니까?')) {
-            await oktaAuth.signOut({
-                postLogoutRedirectUri: 'https://damysone.github.io/ransom-demo-site/index.html'
-            });
-        }
-    }
-</script>
+    </script>
 </body>
 </html>
