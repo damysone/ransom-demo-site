@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to VIVID JOURNEY</title>
+    <!-- Okta Auth JS SDK -->
+    <script src="https://global.oktacdn.com/okta-auth-js/7.5.1/okta-auth-js.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(2, 6, 23, 0.65), rgba(2, 6, 23, 0.85)), 
+                        url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .bg-glow-1 {
+            position: absolute;
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(255, 117, 140, 0.18) 0%, rgba(0,0,0,0) 70%);
+            top: -10%;
+            left: -15%;
+            animation: float 14s infinite alternate ease-in-out;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, rgba(0,0,0,0) 70%);
+            bottom: -15%;
+            right: -15%;
+            animation: float 20s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 60px) scale(1.1); }
+        }
+
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 60px 50px;
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            width: 500px;
+            z-index: 10;
+            animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .success-icon-wrap {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2) 0%, rgba(255, 117, 140, 0.2) 100%);
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px auto;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+        }
+
+        .success-icon {
+            font-size: 32px;
+            background: linear-gradient(to right, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-sub {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00f2fe;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: 300;
+        }
+
+        p strong {
+            color: #f8fafc;
+            font-weight: 600;
+        }
+
+        .btn-dashboard {
+            display: inline-block;
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            color: #e2e8f0;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 35px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-dashboard:hover {
+            background: linear-gradient(135deg, #00f2fe 0%, #ff758c 100%);
+            border-color: transparent;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.35);
+        }
+
+        .btn-dashboard:active {
+            transform: translateY(0);
+        }
+
+        .btn-logout {
+            display: inline-block;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s;
+        }
+
+        .btn-logout:hover {
+            color: #ff758c; 
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <div class="welcome-card">
+        <div class="success-icon-wrap">
+            <span class="success-icon">✓</span>
+        </div>
+        
+        <div class="brand-sub">Verified Member</div>
+        <h1 id="welcomeTitle">Welcome Aboard!</h1>
+        
+        <div style="margin-top: 20px;">
+            <p><strong id="userEmail">Loading...</strong> 멤버십 인증이 완료되었습니다.</p>
+            <p>일상에서 벗어나 당신이 마주할 특별한 여정,</p>
+            <p>엄선된 프리미엄 프라이빗 큐레이션이 지금 시작됩니다. ✈️🍹</p>
+        </div>
+
+        <a href="packages.html" class="btn-dashboard">
+            Explore Curated Packages
+        </a>
+
+        <br>
+        <a href="javascript:void(0);" class="btn-logout" onclick="handleLogout()">
+            Sign Out / Logout
+        </a>
+    </div>
+
+<script>
+    let oktaAuth = null;
+    const oktaConfig = {
+        issuer: "https://isd.okta.com/oauth2/default",
+        clientId: "0oa17gugbkec3KPTK698",
+        redirectUri: "https://tashakur.github.io/ransom-demo-site/welcome.html",
+        scopes: ['openid', 'profile', 'email'],
+        pkce: true
+    };
+
+    window.onload = async () => {
+        try {
+            if (typeof OktaAuth === 'undefined') throw new Error("Okta SDK 로드 실패");
+            oktaAuth = new OktaAuth(oktaConfig);
+
+            // Okta 로그인 리다이렉트 콜백 파싱 및 토큰 저장
+            if (oktaAuth.isLoginRedirect()) {
+                await oktaAuth.handleLoginRedirect();
+            }
+
+            const isAuthenticated = await oktaAuth.isAuthenticated();
+            if (!isAuthenticated) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const user = await oktaAuth.getUser();
+            if (user) {
+                const displayName = user.name || user.preferred_username || user.nickname || 'Member';
+                document.getElementById('welcomeTitle').innerText = `Welcome, ${displayName}!`;
+                document.getElementById('userEmail').innerText = user.email || user.preferred_username || '';
+            }
+        } catch (error) {
+            console.error("인증 콜백 처리 에러:", error);
+            alert("인증 정보 처리 중 에러가 발생하여 로그인 메인으로 이동합니다.\n원인: " + error.message);
+            window.location.href = 'index.html';
+        }
+    };
+
+    async function handleLogout() {
+        if (confirm('VIVID JOURNEY에서 로그아웃 하시겠습니까?')) {
+            await oktaAuth.signOut({
+                postLogoutRedirectUri: 'https://tashakur.github.io/auth0/index.html'
+            });
+        }
+    }
+</script>
+</body>
+</html>
